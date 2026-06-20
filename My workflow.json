@@ -1,0 +1,349 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Phản hồi khách hàng",
+        "formDescription": "Vui lòng chia sẻ trải nghiệm của bạn với dịch vụ của chúng tôi",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Họ tên",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Nội dung phản hồi",
+              "fieldType": "textarea",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        0,
+        -112
+      ],
+      "id": "56b78374-b668-4de1-b4ea-5dd6a0ac3eea",
+      "name": "On form submission",
+      "webhookId": "435f71bd-45c7-4c7c-91fc-601ba2c6d061"
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json[\"Nội dung phản hồi\"] }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Tốt"
+            },
+            {
+              "category": "Trung bình"
+            },
+            {
+              "category": "Cần xử lý"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        -112
+      ],
+      "id": "e25e387a-29f9-4678-85f9-a1cff4d54ec2",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1wJvDgd394hqLHMgi2ABXpgYzKUXebdYlhMxmGyuENdc",
+          "mode": "list",
+          "cachedResultName": "Dự án 2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wJvDgd394hqLHMgi2ABXpgYzKUXebdYlhMxmGyuENdc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Trang tính1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1wJvDgd394hqLHMgi2ABXpgYzKUXebdYlhMxmGyuENdc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Họ và tên": "={{ $('On form submission').item.json[\"Họ tên\"] }}",
+            "Nội dung phản hồi": "={{ $('On form submission').item.json[\"Nội dung phản hồi\"] }}",
+            "Phân loại": "={{ $('Edit Fields2').item.json[\"Phân loại\"] }}",
+            "Thời gian": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Họ và tên",
+              "displayName": "Họ và tên",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nội dung phản hồi",
+              "displayName": "Nội dung phản hồi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phân loại",
+              "displayName": "Phân loại",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Thời gian",
+              "displayName": "Thời gian",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        912,
+        -112
+      ],
+      "id": "c0423125-95f4-422c-af26-1353087dd08c",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "OJf2rUHlgjf4uFq7",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        304,
+        144
+      ],
+      "id": "91e90058-b1fa-4ed6-8899-dfb5f78ca3d4",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "SvkWjkkKJxxFMIV5",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4ff78eea-5774-44b1-9d6f-a5ca42a5744b",
+              "name": "Phân loại",
+              "value": "Tốt",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        -368
+      ],
+      "id": "d4a8c46c-b098-42eb-b800-687487e7fadd",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e80a79ef-5089-45aa-9c69-bcd81cd32ea7",
+              "name": "Phân loại",
+              "value": "Trung bình",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        -112
+      ],
+      "id": "17ef878f-5ac8-4186-b839-a12236034923",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "00ba47f1-e38d-4d24-87e0-b4a217235336",
+              "name": "Phân loại",
+              "value": "Cần xử lý",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        576,
+        96
+      ],
+      "id": "0b98602b-aa57-40f0-b89c-df84a7fe23dd",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "content": "# Customer Feedback Automation Workflow\n\nWorkflow n8n tự động xử lý form phản hồi khách hàng.\n\n## Tính năng chính\n- Trigger khi có form submission\n- Sử dụng Gemini AI phân loại phản hồi (Tốt / Trung bình / Cần xử lý)\n- Tự động lưu dữ liệu vào Google Sheets\n- Xử lý real-time\n\n## Công cụ sử dụng\n- n8n\n- Google Gemini AI\n- Google Sheets"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        896,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "a9d84337-f67d-4891-a6ef-a0ec20da199c",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6635d20e-6d8d-4667-9475-8c0f483d899a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4dae8b66df69e3331f9b65023760e581561eba6d83fa54d40edf80b6217f87fb"
+  },
+  "nodeGroups": [],
+  "id": "AKyDQrRQnAa63cdW",
+  "tags": []
+}
